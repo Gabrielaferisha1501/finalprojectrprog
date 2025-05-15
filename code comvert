@@ -2,34 +2,88 @@ library(shiny)
 library(leaflet)
 library(ggplot2)
 
-# Data kecamatan di Sleman dan koordinat TPS3R
-sleman_kecamatan <- c("Depok", "Ngaglik", "Gamping", "Berbah", "Cangkringan", 
-                      "Godean", "Kalasan", "Minggir", "Mlati", "Moyudan", 
-                      "Ngemplak", "Pakem", "Prambanan", "Seyegan", "Sleman", 
-                      "Tempel", "Turi")
-# Data TPS3R dengan informasi tambahan
+# Data TPS3R dari Data TPS3R DIY.xlsx
 tps3r_data <- data.frame(
-  Kecamatan = sleman_kecamatan,
-  Latitude = c(-7.769, -7.678, -7.792, -7.811, -7.641, -7.769, -7.781, -7.806, 
-               -7.747, -7.833, -7.702, -7.637, -7.762, -7.741, -7.716, -7.694, -7.667),
-  Longitude = c(110.395, 110.398, 110.317, 110.453, 110.466, 110.297, 110.437, 
-                110.276, 110.344, 110.283, 110.422, 110.378, 110.496, 110.323, 
-                110.355, 110.305, 110.333),
-  Nama_PSM = c("TPS3R Sample Depok", "TPS3R Sample Ngaglik", "TPS3R Sample Gamping", 
-               "TPS3R Sample Berbah", "TPS3R Sample Cangkringan", "TPS3R Sample Godean", 
-               "TPS3R Sample Kalasan", "TPS3R Sample Minggir", "TPS3R Sample Mlati", 
-               "TPS3R Sample Moyudan", "TPS3R Sample Ngemplak", "TPS3R Sample Pakem", 
-               "TPS3R Sample Prambanan", "TPS3R Sample Seyegan", "TPS3R Sample Sleman", 
-               "TPS3R Kenanga Merdiko", "TPS3R Sample Turi"),
+  Nama_PSM = c("Jati Bening", "Pagarum Kasongan Permai", "TPS3RSRIHARDONO", "Sampah Legi", "GO-SARI", 
+               "KSM", "Sampah Legi", "ksm agung rejeki", "TPS Triwidadi", "Tps pundong", 
+               "tps3rksmagungrejeki", "TPS3R Jion", "ASRI", "zamzam ah", "ngudi sampurno", 
+               "TPS3R Barokah", "NGAWU ASRI", "TPS 3 R NGUDI RESIK", "KSM Amrih Lestari 1", 
+               "bssolo123", "tps 3r margo mulyo", "tps 3r ngudi rejeki selang", "purwo lestari", 
+               "tps3r amrih lestari 2", "tps3r Rista sentosa", "bs solo", "alfandi", 
+               "TPS amrih resik", "ksm sampunoasih", "TPS3R migunani", "TPS3R Kenanga Merdiko", 
+               "tpst3r randualas", "tps3r mexicana", "tps3r dlhk diy"),
+  Kabupaten = c("BANTUL", "BANTUL", "BANTUL", "BANTUL", "BANTUL", "BANTUL", "BANTUL", 
+                "BANTUL", "BANTUL", "BANTUL", "BANTUL", "BANTUL", "BANTUL", "GUNUNGKIDUL", 
+                "GUNUNGKIDUL", "GUNUNGKIDUL", "GUNUNGKIDUL", "GUNUNGKIDUL", "GUNUNGKIDUL", 
+                "GUNUNGKIDUL", "GUNUNGKIDUL", "GUNUNGKIDUL", "GUNUNGKIDUL", "GUNUNGKIDUL", 
+                "GUNUNGKIDUL", "GUNUNGKIDUL", "KULON PROGO", "KULON PROGO", "KULON PROGO", 
+                "KULON PROGO", "SLEMAN", "SLEMAN", "SLEMAN", "KOTA YOGYAKARTA"),
+  Kapanewon = c("Pleret", "Kasihan", "Pundong", "Srandakan", "Pajangan", "Banguntapan", 
+                "Srandakan", "Jetis", "Pajangan", "Pundong", "Jetis", "Piyungan", "Pajangan", 
+                "Patuk", "Karangmojo", "Patuk", "Playen", "Ponjong", "Wonosari", "Wonosari", 
+                "Semanu", "Wonosari", "Wonosari", "Wonosari", "Wonosari", "Karangmojo", 
+                "Galur", "Wates", "Pengasih", "Sentolo", "Tempel", "Ngaglik", "Ngaglik", 
+                "Gondokusuman"),
+  Kalurahan = c("Wonokromo", "Bangunjiwo", "Srihardono", "Trimurti", "Guwosari", 
+                "Baturetno", "Trimurti", "Sumberagung", "Triwidadi", "Srihardono", 
+                "Sumberagung", "Srimulyo", "Guwosari", "Pengkok", "Bejiharjo", 
+                "Nglanggeran", "Ngawu", "Ponjong", "Kepek", "Wonosari", "Semanu", 
+                "Selang", "Baleharjo", "Kepek", "Siraman", "Karangmojo", "Kranggan", 
+                "Ngestiharjo", "Pengasih", "Salamrejo", "Merdikorejo", "Sardonoharjo", 
+                "Sinduharjo", "Baciro"),
+  Latitude = c(-7.8601877607, -7.845141843, -7.9501373227, -7.9505274856, -7.8799534434, 
+               -7.8148497422, -7.9386099988, -7.9005934162, -7.9052261, -7.9506473569, 
+               -8.0357832686, -7.9051198, -7.890738252, -7.8426693915, -7.9644829, 
+               -7.8503327977, -7.9402791933, -7.9836780246, -7.9612144853, -7.9639870496, 
+               -8.0052840786, -7.9664534539, -7.9710316028, -7.8241711086, -7.9744452589, 
+               -7.9835661317, -6.2410923, -7.7836552173, -7.8578133, -7.8589476, 
+               -7.6445987183, -7.7179317, -7.7179864, -7.7897731),
+  Longitude = c(110.3867525607, 110.3154864706, 110.3458694835, 110.2562922612, 110.3069031984, 
+                110.4147886895, 110.2615647907, 110.3708152609, 110.3472513, 110.3456826314, 
+                110.490720703, 110.3475856, 110.3090814874, 110.3431282361, 110.6015257, 
+                110.5322003737, 110.5497725308, 110.7138670608, 110.5994953215, 110.60098093, 
+                110.6566374376, 110.6194506213, 110.6056657434, 110.5969542637, 110.5941235274, 
+                110.3059443086, 106.7999167, 110.3915986419, 110.1463917, 110.2323082834, 
+                110.3437493742, 110.3550341, 110.355034, 110.3825095),
   Jenis_PSM = "TPS3R",
-  Alamat = c("Jl. Sample Depok", "Jl. Sample Ngaglik", "Jl. Sample Gamping", 
-             "Jl. Sample Berbah", "Jl. Sample Cangkringan", "Jl. Sample Godean", 
-             "Jl. Sample Kalasan", "Jl. Sample Minggir", "Jl. Sample Mlati", 
-             "Jl. Sample Moyudan", "Jl. Sample Ngemplak", "Jl. Sample Pakem", 
-             "Jl. Sample Prambanan", "Jl. Sample Seyegan", "Jl. Sample Sleman", 
-             "Soka Martani, Merdikorejo, Tempel, Sleman", "Jl. Sample Turi"),
   No_Telp = "0812-3456-7890",
-  Gmaps_Link = c(rep("https://g.co/kgs/sample", 15), "https://g.co/kgs/f9mBxsh", "https://g.co/kgs/sample")
+  Gmaps_Link = c(
+    "https://sipari.jogjaprov.go.id/data_psm/detail/8ada660e06b787f245667943dc948dafab997e25",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/c097638f92de80ba8d6c696b26e6e601a5f61eb7",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/6c1e671f9af5b46d9c1a52067bdf0e53685674f7",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/8effee409c625e1a2d8f5033631840e6ce1dcb64",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/cb4e5208b4cd87268b208e49452ed6e89a68e0b8",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/1185401df4fc07ec0f2e42c538ab6b1bb1388264",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/300122350a32530a2c2103b46ed07eacdc82aff8",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/2c9a62c3748f484690d547c0d707aededf04fbd2",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/f83a383c0fa81f295d057f8f5ed0ba4610947817",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/edd6ebda641b723cc1bc537c49099c1d5a458138",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/d049c44e2fd67b6eb19a1c18c93110c0b52cab63",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/9d8974baddfc0e53300829f37e5fc88b0f5ce61b",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/ccddaf626302032b0414003d6d4ebbfe4b3f99af",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/93e097e319c2db13edf06f45c4dff4f741394c0d",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/f1e75747bc4c6d0b16f0d429b76d23f1c06153a9",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/456f2361d677372141da13ecbc8f27b83f5b6a15",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/77d67ab1e3d05296a7131e197d9d3767fb900bad",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/1b0a69d74c5ab68f9e3505f103f40618a51e5987",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/ee16ee0fa7f21a4101793582e1cf4b24fef9f948",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/1106a1dda2d680438ecfb0bb70fd479c55a1791f",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/f47aea8bdcbd1179a1f3d91e6afeeb259488f2d1",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/c9ca442765657fc90e9e779c34d0d2259d2c3c5b",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/9a79be611e0267e1d943da0737c6c51be67865a0",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/0ca9277f91e40054767f69afeb0426711ca0fddd",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/7719a1c782a1ba91c031a682a0a2f8658209adbf",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/9e6a55b6b4563e652a23be9d623ca5055c356940",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/1574bddb75c78a6fd2251d61e2993b5146201319",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/3b69df951b3d4c18c3cb681597fbb9bba88d799c",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/8ee51caaa2c2f4ee2e5b4b7ef5a89db7df1068d7",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/b37f6ddcefad7e8657837d3177f9ef2462f98acf",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/e62d7f1eb43d87c202d2f164ba61297e71be80f4",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/b888b29826bb53dc531437e723738383d8339b56",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/d54ad009d179ae346683cfc3603979bc99339ef7",
+    "https://sipari.jogjaprov.go.id/data_psm/detail/450ddec8dd206c2e2ab1aeeaa90e85e51753b8b7"
+  ),
+  stringsAsFactors = FALSE
 )
 
 # UI
@@ -48,39 +102,18 @@ ui <- fluidPage(
       .info-box { background-color: #e8f5e9; padding: 15px; border-radius: 5px; margin: 10px; }
       .info-link { color: #2e7d32; cursor: pointer; text-decoration: underline; margin-left: 10px; }
       .info-link:hover { color: #388e3c; }
-      .popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-               background-color: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.3); 
-               z-index: 1000; max-width: 300px; text-align: center; }
-      .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-                       background: rgba(0,0,0,0.5); z-index: 999; }
-      .user-info { position: absolute; top: 10px; left: 10px; color: #2e7d32; font-size: 1.2em; }
+      .popup-box { background-color: #fff; padding: 20px; border-radius: 5px; 
+                   box-shadow: 0 0 10px rgba(0,0,0,0.3); margin: 20px auto; max-width: 400px; 
+                   text-align: center; }
+      .user-info { background-color: #e8f5e9; padding: 10px; border-radius: 5px; 
+                   margin: 10px; text-align: center; color: #2e7d32; }
       .user-stats { font-size: 0.9em; color: #388e3c; }
       .emoji { font-size: 1.5em; }
-    ")),
-    tags$script(HTML("
-      function showPopup(popupId) {
-        document.getElementById('popup-overlay').style.display = 'block';
-        document.getElementById(popupId).style.display = 'block';
-      }
-      function hidePopup(popupId) {
-        document.getElementById('popup-overlay').style.display = 'none';
-        document.getElementById(popupId).style.display = 'none';
-      }
     "))
   ),
   
   # Kontrol halaman
-  uiOutput("current_page"),
-  # Popup overlay dan konten
-  div(id = "popup-overlay"),
-  div(id = "green-popup", class = "popup", style = "display: none;",
-      p("Sampah hijau merupakan sampah organik yang kaya akan nitrogen. Terdiri dari sisa buah, sayur, kulit telur, dan rumput hijau."),
-      actionButton("close_green_popup", "Tutup", class = "btn-custom")
-  ),
-  div(id = "brown-popup", class = "popup", style = "display: none;",
-      p("Sampah cokelat merupakan sampah organik yang kaya akan karbon. Terdiri dari daun kering, ranting kecil, dan bubuk kayu."),
-      actionButton("close_brown_popup", "Tutup", class = "btn-custom")
-  )
+  uiOutput("current_page")
 )
 
 # Server
@@ -90,12 +123,36 @@ server <- function(input, output, session) {
   
   # Inisialisasi data pengguna
   if (file.exists(user_file)) {
-    rv <- reactiveValues(
-      page = "main", 
-      history = c(), 
-      users = readRDS(user_file),
-      current_user = NULL
-    )
+    users_data <- readRDS(user_file)
+    # Validasi struktur users.rds
+    expected_cols <- c("Name", "Email", "Password", "Sent_Waste", "Processed_Waste")
+    if (all(expected_cols %in% colnames(users_data))) {
+      rv <- reactiveValues(
+        page = "main", 
+        history = c(), 
+        users = users_data,
+        current_user = NULL,
+        show_green_popup = FALSE,
+        show_brown_popup = FALSE
+      )
+    } else {
+      message("Invalid users.rds structure. Initializing new users data frame.")
+      rv <- reactiveValues(
+        page = "main", 
+        history = c(), 
+        users = data.frame(
+          Name = character(), 
+          Email = character(), 
+          Password = character(), 
+          Sent_Waste = numeric(),
+          Processed_Waste = numeric(),
+          stringsAsFactors = FALSE
+        ),
+        current_user = NULL,
+        show_green_popup = FALSE,
+        show_brown_popup = FALSE
+      )
+    }
   } else {
     rv <- reactiveValues(
       page = "main", 
@@ -108,7 +165,9 @@ server <- function(input, output, session) {
         Processed_Waste = numeric(),
         stringsAsFactors = FALSE
       ),
-      current_user = NULL
+      current_user = NULL,
+      show_green_popup = FALSE,
+      show_brown_popup = FALSE
     )
   }
   
@@ -138,7 +197,6 @@ server <- function(input, output, session) {
       tagList(
         div(class = "user-info",
             p(strong(paste("Hi,", rv$current_user$Name))),
-            p(class = "user-stats", paste("Sampah yang Kamu Kirim:", rv$current_user$Sent_Waste, "kg")),
             p(class = "user-stats", paste("Sampah yang Kamu Olah:", rv$current_user$Processed_Waste, "kg"))
         )
       )
@@ -179,21 +237,23 @@ server <- function(input, output, session) {
         radioButtons("process_choice", "Apakah kamu ingin mengolah sampah sendiri?",
                      choices = c("Ya" = "yes", "Tidak" = "no"), inline = TRUE),
         actionButton("process_submit", "Lanjut", class = "btn-custom"),
-        actionButton("back_btn", "Kembali", class = "btn-back")
+        actionButton("back_btn", "Kembali", class = "btn-back"),
+        user_info
       )
     } else if (rv$page == "tps") {
       tagList(
         h2("Pengiriman Sampah ke TPS3R 📍", style = "text-align: center; color: #2e7d32;"),
         selectInput("kabupaten", "Pilih Kabupaten", 
-                    choices = c("Yogyakarta", "Sleman", "Gunung Kidul", "Bantul", "Kulon Progo")),
+                    choices = unique(tps3r_data$Kabupaten)),
         conditionalPanel(
-          condition = "input.kabupaten == 'Sleman'",
-          selectInput("kecamatan", "Pilih Kecamatan", choices = sleman_kecamatan)
+          condition = "input.kabupaten != ''",
+          selectInput("kecamatan", "Pilih Kapanewon", choices = NULL)
         ),
         numericInput("tps_waste", "Berapa kg sampah yang akan dikirim?", value = 0, min = 0),
         actionButton("tps_submit", "Cari TPS3R Terdekat", class = "btn-custom"),
         actionButton("back_btn", "Kembali", class = "btn-back"),
-        uiOutput("tps_result")
+        uiOutput("tps_result"),
+        user_info
       )
     } else if (rv$page == "compost") {
       tagList(
@@ -201,39 +261,70 @@ server <- function(input, output, session) {
         div(class = "info-box",
             numericInput("green_waste", 
                          div("Berapa kg sampah hijau yang kamu punya?", 
-                             tags$span(class = "info-link", 
-                                       onclick = "showPopup('green-popup')", 
-                                       "Nggak tahu apa itu sampah hijau? Klik ini")),
+                             actionLink("show_green_popup", "Nggak tahu apa itu sampah hijau? Klik ini", 
+                                       class = "info-link")),
                          value = 0, min = 0),
+            conditionalPanel(
+              condition = "output.show_green_popup",
+              div(class = "popup-box",
+                  p("Sampah hijau merupakan sampah organik yang kaya akan nitrogen. Terdiri dari sisa buah, sayur, kulit telur, dan rumput hijau."),
+                  actionButton("close_green_popup", "Tutup", class = "btn-custom")
+              )
+            ),
             numericInput("brown_waste", 
                          div("Berapa kg sampah cokelat yang kamu punya?", 
-                             tags$span(class = "info-link", 
-                                       onclick = "showPopup('brown-popup')", 
-                                       "Nggak tahu apa itu sampah cokelat? Klik ini")),
-                         value = 0, min = 0)
+                             actionLink("show_brown_popup", "Nggak tahu apa itu sampah cokelat? Klik ini", 
+                                       class = "info-link")),
+                         value = 0, min = 0),
+            conditionalPanel(
+              condition = "output.show_brown_popup",
+              div(class = "popup-box",
+                  p("Sampah cokelat merupakan sampah organik yang kaya akan karbon. Terdiri dari daun kering, ranting kecil, dan bubuk kayu."),
+                  actionButton("close_brown_popup", "Tutup", class = "btn-custom")
+              )
+            )
         ),
         actionButton("compost_submit", "Hitung Kompos", class = "btn-custom"),
         actionButton("back_btn", "Kembali", class = "btn-back"),
-        uiOutput("compost_result")
+        uiOutput("compost_result"),
+        user_info
       )
     }
     
-    tagList(user_info, page_content)
+    tagList(page_content)
   })
   
-  # Tutup popup
+  # Update pilihan Kapanewon berdasarkan Kabupaten
+  observe({
+    kab <- input$kabupaten
+    if (!is.null(kab) && kab != "") {
+      kec_choices <- unique(tps3r_data$Kapanewon[tps3r_data$Kabupaten == kab])
+      updateSelectInput(session, "kecamatan", choices = kec_choices)
+    }
+  })
+  
+  # Output untuk kontrol pop-up
+  output$show_green_popup <- reactive({
+    rv$show_green_popup
+  })
+  output$show_brown_popup <- reactive({
+    rv$show_brown_popup
+  })
+  outputOptions(output, "show_green_popup", suspendWhenHidden = FALSE)
+  outputOptions(output, "show_brown_popup", suspendWhenHidden = FALSE)
+  
+  # Toggle pop-up
+  observeEvent(input$show_green_popup, {
+    rv$show_green_popup <- TRUE
+  })
+  observeEvent(input$show_brown_popup, {
+    rv$show_brown_popup <- TRUE
+  })
   observeEvent(input$close_green_popup, {
-    session$sendCustomMessage(type = 'hidePopup', message = list(popupId = 'green-popup'))
+    rv$show_green_popup <- FALSE
   })
-  
   observeEvent(input$close_brown_popup, {
-    session$sendCustomMessage(type = 'hidePopup', message = list(popupId = 'brown-popup'))
-  })
-  
-  # Handler untuk JavaScript hidePopup
-  session$onSessionEnded(function() {
-    session$sendCustomMessage(type = 'hidePopup', message = list(popupId = 'green-popup'))
-    session$sendCustomMessage(type = 'hidePopup', message = list(popupId = 'brown-popup'))
+    rv$show_brown_popup <- FALSE
   })
   
   # Navigasi ke halaman login
@@ -282,6 +373,7 @@ server <- function(input, output, session) {
       user <- rv$users[rv$users$Email == input$login_email, ]
       if (nrow(user) > 0 && user$Password == input$login_password) {
         rv$current_user <- user
+        message("Login successful for email: ", input$login_email)
         update_history("process")
       } else {
         showNotification("Email atau password salah! Silakan coba lagi atau sign-up.", type = "error")
@@ -307,26 +399,45 @@ server <- function(input, output, session) {
   
   # Logika TPS3R
   observeEvent(input$tps_submit, {
-    if (input$kabupaten == "Sleman") {
+    if (input$kabupaten != "" && !is.null(input$kecamatan)) {
       if (input$tps_waste <= 0) {
         showNotification("Masukkan jumlah sampah yang valid!", type = "error")
       } else {
         selected_kec <- input$kecamatan
-        tps <- tps3r_data[tps3r_data$Kecamatan == selected_kec, ]
-        # Tambah jumlah sampah yang dikirim
-        rv$users$Sent_Waste[rv$users$Email == rv$current_user$Email] <- 
-          rv$users$Sent_Waste[rv$users$Email == rv$current_user$Email] + input$tps_waste
-        rv$current_user$Sent_Waste <- rv$current_user$Sent_Waste + input$tps_waste
-        save_users()
+        tps <- tps3r_data[tps3r_data$Kapanewon == selected_kec & tps3r_data$Kabupaten == input$kabupaten, ]
+        if (nrow(tps) == 0) {
+          output$tps_result <- renderUI({
+            p("Mohon maaf, tidak ada TPS3R di Kapanewon ini. Coba pilih Kapanewon lain.", style = "color: #d32f2f;")
+          })
+          return()
+        }
+        if (!is.null(rv$current_user) && rv$current_user$Email %in% rv$users$Email) {
+          user_index <- which(rv$users$Email == rv$current_user$Email)
+          if (length(user_index) == 0) {
+            message("Error: No matching user index for email: ", rv$current_user$Email)
+            showNotification("Error: Pengguna tidak valid. Silakan login ulang.", type = "error")
+            update_history("login")
+            return()
+          }
+          message("Updating Sent_Waste for user: ", rv$current_user$Email)
+          rv$users$Sent_Waste[user_index] <- rv$users$Sent_Waste[user_index] + input$tps_waste
+          rv$current_user$Sent_Waste <- rv$current_user$Sent_Waste + input$tps_waste
+          save_users()
+        } else {
+          message("Error: Invalid current_user or email not in users.")
+          showNotification("Error: Pengguna tidak valid. Silakan login ulang.", type = "error")
+          update_history("login")
+          return()
+        }
         
         output$tps_result <- renderUI({
           tagList(
             h3("Lokasi TPS3R Terdekat:"),
-            p(strong("Nama PSM: "), tps$Nama_PSM),
-            p(strong("Jenis PSM: "), tps$Jenis_PSM),
-            p(strong("Alamat: "), tps$Alamat),
-            p(strong("No. Telp: "), tps$No_Telp),
-            p(strong("Google Maps: "), tags$a(href = tps$Gmaps_Link, "Lihat di Google Maps", target = "_blank")),
+            p(strong("Nama PSM: "), tps$Nama_PSM[1]),
+            p(strong("Jenis PSM: "), tps$Jenis_PSM[1]),
+            p(strong("Alamat: "), paste(tps$Kalurahan[1], tps$Kapanewon[1], tps$Kabupaten[1], sep = ", ")),
+            p(strong("No. Telp: "), tps$No_Telp[1]),
+            p(strong("Detail: "), tags$a(href = tps$Gmaps_Link[1], "Lihat detail", target = "_blank")),
             leafletOutput("tps_map"),
             p("Silahkan menuju lokasi tersebut yaa!! Thank you 😊🌍", style = "color: #2e7d32; font-weight: bold;")
           )
@@ -334,12 +445,12 @@ server <- function(input, output, session) {
         output$tps_map <- renderLeaflet({
           leaflet() %>%
             addTiles() %>%
-            addMarkers(lat = tps$Latitude, lng = tps$Longitude, popup = tps$Nama_PSM)
+            addMarkers(lat = tps$Latitude[1], lng = tps$Longitude[1], popup = tps$Nama_PSM[1])
         })
       }
     } else {
       output$tps_result <- renderUI({
-        p("Mohon maaf, saat ini hanya tersedia data TPS3R untuk Sleman. 😔", style = "color: #d32f2f;")
+        p("Pilih Kabupaten dan Kapanewon terlebih dahulu.", style = "color: #d32f2f;")
       })
     }
   })
@@ -353,11 +464,24 @@ server <- function(input, output, session) {
       showNotification("Masukkan jumlah sampah yang valid!", type = "error")
     } else {
       compost <- (total_waste * 3) / 4
-      # Simpan data sampah yang diolah
-      rv$users$Processed_Waste[rv$users$Email == rv$current_user$Email] <- 
-        rv$users$Processed_Waste[rv$users$Email == rv$current_user$Email] + total_waste
-      rv$current_user$Processed_Waste <- rv$current_user$Processed_Waste + total_waste
-      save_users()
+      if (!is.null(rv$current_user) && rv$current_user$Email %in% rv$users$Email) {
+        user_index <- which(rv$users$Email == rv$current_user$Email)
+        if (length(user_index) == 0) {
+          message("Error: No matching user index for email: ", rv$current_user$Email)
+          showNotification("Error: Pengguna tidak valid. Silakan login ulang.", type = "error")
+          update_history("login")
+          return()
+        }
+        message("Updating Processed_Waste for user: ", rv$current_user$Email)
+        rv$users$Processed_Waste[user_index] <- rv$users$Processed_Waste[user_index] + total_waste
+        rv$current_user$Processed_Waste <- rv$current_user$Processed_Waste + total_waste
+        save_users()
+      } else {
+        message("Error: Invalid current_user or email not in users.")
+        showNotification("Error: Pengguna tidak valid. Silakan login ulang.", type = "error")
+        update_history("login")
+        return()
+      }
       
       output$compost_result <- renderUI({
         tagList(
@@ -396,5 +520,3 @@ server <- function(input, output, session) {
 
 # Run app
 shinyApp(ui, server)
-
-
