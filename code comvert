@@ -90,25 +90,134 @@ tps3r_data <- data.frame(
 ui <- fluidPage(
   tags$head(
     tags$style(HTML("
-      body { font-family: Arial, sans-serif; background-color: #f0f9e8; }
-      .title { text-align: center; color: #2e7d32; font-size: 2.5em; margin-top: 20px; }
-      .welcome { text-align: center; color: #388e3c; font-size: 1.5em; }
-      .btn-custom { background-color: #4caf50; color: white; border: none; padding: 10px 20px; 
-                    font-size: 1.2em; margin: 10px; cursor: pointer; }
-      .btn-custom:hover { background-color: #388e3c; }
-      .btn-back { background-color: #ff9800; color: white; border: none; padding: 8px 16px; 
-                  font-size: 1em; margin: 10px; cursor: pointer; }
-      .btn-back:hover { background-color: #f57c00; }
-      .info-box { background-color: #e8f5e9; padding: 15px; border-radius: 5px; margin: 10px; }
-      .info-link { color: #2e7d32; cursor: pointer; text-decoration: underline; margin-left: 10px; }
-      .info-link:hover { color: #388e3c; }
-      .popup-box { background-color: #fff; padding: 20px; border-radius: 5px; 
-                   box-shadow: 0 0 10px rgba(0,0,0,0.3); margin: 20px auto; max-width: 400px; 
-                   text-align: center; }
-      .user-info { background-color: #e8f5e9; padding: 10px; border-radius: 5px; 
-                   margin: 10px; text-align: center; color: #2e7d32; }
-      .user-stats { font-size: 0.9em; color: #388e3c; }
-      .emoji { font-size: 1.5em; }
+      @import url('https://fonts.googleapis.com/css2?family=Sunborn:wght@400;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Glacial+Indifference:wght@400;700&display=swap');
+      
+      body { 
+        font-family: 'Glacial Indifference', sans-serif; 
+        background: linear-gradient(to bottom, #e8f5e9, #1b5e20), 
+                    url('https://www.transparenttextures.com/patterns/leaf.png');
+        background-size: cover;
+        background-attachment: fixed;
+        color: #ffffff; 
+        margin: 0; 
+        padding: 20px; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        min-height: 100vh; 
+        position: relative;
+      }
+      .container { 
+        max-width: 600px; 
+        margin: auto; 
+        padding: 20px; 
+        background: rgba(255, 255, 255, 0.9); 
+        border-radius: 10px; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+        text-align: center; 
+        position: relative;
+        z-index: 1;
+      }
+      .logo-bg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50%;
+        max-width: 300px;
+        opacity: 0.4;
+        z-index: -1;
+      }
+      .title { 
+        font-family: 'Sunborn', sans-serif; 
+        color: #1b5e20; 
+        font-size: 2.5em; 
+        margin: 20px 0 10px; 
+      }
+      .subtitle { 
+        font-family: 'Glacial Indifference', sans-serif; 
+        color: #388e3c; 
+        font-size: 1.2em; 
+        margin-bottom: 20px; 
+      }
+      h2, h3, h4 { 
+        font-family: 'Sunborn', sans-serif; 
+        color: #1b5e20; 
+      }
+      p, label, input, select { 
+        font-family: 'Glacial Indifference', sans-serif; 
+        color: #1b5e20; 
+      }
+      .btn-custom { 
+        background-color: #43a047; 
+        color: white; 
+        border: none; 
+        padding: 12px 24px; 
+        font-size: 1.2em; 
+        margin: 10px; 
+        cursor: pointer; 
+        border-radius: 5px; 
+        transition: background-color 0.3s; 
+      }
+      .btn-custom:hover { 
+        background-color: #2e7d32; 
+      }
+      .btn-back { 
+        background-color: #fb8c00; 
+        color: white; 
+        border: none; 
+        padding: 8px 16px; 
+        font-size: 1em; 
+        margin: 10px; 
+        cursor: pointer; 
+        border-radius: 5px; 
+        transition: background-color 0.3s; 
+      }
+      .btn-back:hover { 
+        background-color: #ef6c00; 
+      }
+      .info-box { 
+        background-color: #e8f5e9; 
+        padding: 15px; 
+        border-radius: 5px; 
+        margin: 10px 0; 
+        border: 1px solid #81c784; 
+      }
+      .info-link { 
+        color: #2e7d32; 
+        cursor: pointer; 
+        text-decoration: underline; 
+        margin-left: 10px; 
+      }
+      .info-link:hover { 
+        color: #43a047; 
+      }
+      .popup-box { 
+        background-color: #fff; 
+        padding: 20px; 
+        border-radius: 5px; 
+        box-shadow: 0 0 10px rgba(0,0,0,0.3); 
+        margin: 20px auto; 
+        max-width: 400px; 
+        text-align: center; 
+      }
+      .user-info { 
+        background-color: #e8f5e9; 
+        padding: 10px; 
+        border-radius: 5px; 
+        margin: 10px 0; 
+        text-align: center; 
+        color: #1b5e20; 
+        border: 1px solid #81c784; 
+      }
+      .user-stats { 
+        font-size: 0.9em; 
+        color: #388e3c; 
+      }
+      .emoji { 
+        font-size: 1.5em; 
+      }
     "))
   ),
   
@@ -206,13 +315,13 @@ server <- function(input, output, session) {
     
     page_content <- if (rv$page == "main") {
       tagList(
-        h1("Selamat Datang di Aplikasi Pengolahan Sampah Organik 🌱", class = "title"),
-        p("Ayo mulai kelola sampah organikmu untuk bumi yang lebih hijau! 😊", class = "welcome"),
+        h1("Selamat Datang di Aplikasi ComVert", class = "title"),
+        p("Comvert Your Waste Into Compost", class = "subtitle"),
         actionButton("start_btn", "Start", class = "btn-custom")
       )
     } else if (rv$page == "login") {
       tagList(
-        h2("Login", style = "text-align: center; color: #2e7d32;"),
+        h2("Login", class = "title"),
         textInput("login_email", "Email", placeholder = "Masukkan email"),
         passwordInput("login_password", "Password", placeholder = "Masukkan password"),
         actionButton("login_btn", "Login", class = "btn-custom"),
@@ -222,7 +331,7 @@ server <- function(input, output, session) {
       )
     } else if (rv$page == "signup") {
       tagList(
-        h2("Sign Up", style = "text-align: center; color: #2e7d32;"),
+        h2("Sign Up", class = "title"),
         textInput("signup_name", "Nama", placeholder = "Masukkan nama"),
         textInput("signup_email", "Email", placeholder = "Masukkan email"),
         passwordInput("signup_password", "Password", placeholder = "Masukkan password"),
@@ -233,7 +342,7 @@ server <- function(input, output, session) {
       )
     } else if (rv$page == "process") {
       tagList(
-        h2("Pilih Cara Pengolahan Sampahmu ♻️", style = "text-align: center; color: #2e7d32;"),
+        h2("Pilih Cara Pengolahan Sampahmu ♻️", class = "title"),
         radioButtons("process_choice", "Apakah kamu ingin mengolah sampah sendiri?",
                      choices = c("Ya" = "yes", "Tidak" = "no"), inline = TRUE),
         actionButton("process_submit", "Lanjut", class = "btn-custom"),
@@ -242,14 +351,13 @@ server <- function(input, output, session) {
       )
     } else if (rv$page == "tps") {
       tagList(
-        h2("Pengiriman Sampah ke TPS3R 📍", style = "text-align: center; color: #2e7d32;"),
+        h2("Pengiriman Sampah ke TPS3R 📍", class = "title"),
         selectInput("kabupaten", "Pilih Kabupaten", 
                     choices = unique(tps3r_data$Kabupaten)),
         conditionalPanel(
           condition = "input.kabupaten != ''",
           selectInput("kecamatan", "Pilih Kapanewon", choices = NULL)
         ),
-        numericInput("tps_waste", "Berapa kg sampah yang akan dikirim?", value = 0, min = 0),
         actionButton("tps_submit", "Cari TPS3R Terdekat", class = "btn-custom"),
         actionButton("back_btn", "Kembali", class = "btn-back"),
         uiOutput("tps_result"),
@@ -257,7 +365,7 @@ server <- function(input, output, session) {
       )
     } else if (rv$page == "compost") {
       tagList(
-        h2("Hitung Kompos dari Sampah Organikmu 🌿", style = "text-align: center; color: #2e7d32;"),
+        h2("Hitung Kompos dari Sampah Organikmu 🌿", class = "title"),
         div(class = "info-box",
             numericInput("green_waste", 
                          div("Berapa kg sampah hijau yang kamu punya?", 
@@ -291,7 +399,10 @@ server <- function(input, output, session) {
       )
     }
     
-    tagList(page_content)
+    tagList(
+      img(src = "https://www.pngall.com/wp-content/uploads/2016/04/Leaf-PNG-Clipart.png", class = "logo-bg"),
+      div(class = "container", page_content)
+    )
   })
   
   # Update pilihan Kapanewon berdasarkan Kabupaten
@@ -400,54 +511,46 @@ server <- function(input, output, session) {
   # Logika TPS3R
   observeEvent(input$tps_submit, {
     if (input$kabupaten != "" && !is.null(input$kecamatan)) {
-      if (input$tps_waste <= 0) {
-        showNotification("Masukkan jumlah sampah yang valid!", type = "error")
-      } else {
-        selected_kec <- input$kecamatan
-        tps <- tps3r_data[tps3r_data$Kapanewon == selected_kec & tps3r_data$Kabupaten == input$kabupaten, ]
-        if (nrow(tps) == 0) {
-          output$tps_result <- renderUI({
-            p("Mohon maaf, tidak ada TPS3R di Kapanewon ini. Coba pilih Kapanewon lain.", style = "color: #d32f2f;")
-          })
-          return()
-        }
-        if (!is.null(rv$current_user) && rv$current_user$Email %in% rv$users$Email) {
-          user_index <- which(rv$users$Email == rv$current_user$Email)
-          if (length(user_index) == 0) {
-            message("Error: No matching user index for email: ", rv$current_user$Email)
-            showNotification("Error: Pengguna tidak valid. Silakan login ulang.", type = "error")
-            update_history("login")
-            return()
-          }
-          message("Updating Sent_Waste for user: ", rv$current_user$Email)
-          rv$users$Sent_Waste[user_index] <- rv$users$Sent_Waste[user_index] + input$tps_waste
-          rv$current_user$Sent_Waste <- rv$current_user$Sent_Waste + input$tps_waste
-          save_users()
-        } else {
-          message("Error: Invalid current_user or email not in users.")
+      selected_kec <- input$kecamatan
+      tps <- tps3r_data[tps3r_data$Kapanewon == selected_kec & tps3r_data$Kabupaten == input$kabupaten, ]
+      if (nrow(tps) == 0) {
+        output$tps_result <- renderUI({
+          p("Mohon maaf, tidak ada TPS3R di Kapanewon ini. Coba pilih Kapanewon lain.", style = "color: #d32f2f;")
+        })
+        return()
+      }
+      if (!is.null(rv$current_user) && rv$current_user$Email %in% rv$users$Email) {
+        user_index <- which(rv$users$Email == rv$current_user$Email)
+        if (length(user_index) == 0) {
+          message("Error: No matching user index for email: ", rv$current_user$Email)
           showNotification("Error: Pengguna tidak valid. Silakan login ulang.", type = "error")
           update_history("login")
           return()
         }
-        
-        output$tps_result <- renderUI({
-          tagList(
-            h3("Lokasi TPS3R Terdekat:"),
-            p(strong("Nama PSM: "), tps$Nama_PSM[1]),
-            p(strong("Jenis PSM: "), tps$Jenis_PSM[1]),
-            p(strong("Alamat: "), paste(tps$Kalurahan[1], tps$Kapanewon[1], tps$Kabupaten[1], sep = ", ")),
-            p(strong("No. Telp: "), tps$No_Telp[1]),
-            p(strong("Detail: "), tags$a(href = tps$Gmaps_Link[1], "Lihat detail", target = "_blank")),
-            leafletOutput("tps_map"),
-            p("Silahkan menuju lokasi tersebut yaa!! Thank you 😊🌍", style = "color: #2e7d32; font-weight: bold;")
-          )
-        })
-        output$tps_map <- renderLeaflet({
-          leaflet() %>%
-            addTiles() %>%
-            addMarkers(lat = tps$Latitude[1], lng = tps$Longitude[1], popup = tps$Nama_PSM[1])
-        })
+      } else {
+        message("Error: Invalid current_user or email not in users.")
+        showNotification("Error: Pengguna tidak valid. Silakan login ulang.", type = "error")
+        update_history("login")
+        return()
       }
+      
+      output$tps_result <- renderUI({
+        tagList(
+          h3("Lokasi TPS3R Terdekat:"),
+          p(strong("Nama PSM: "), tps$Nama_PSM[1]),
+          p(strong("Jenis PSM: "), tps$Jenis_PSM[1]),
+          p(strong("Alamat: "), paste(tps$Kalurahan[1], tps$Kapanewon[1], tps$Kabupaten[1], sep = ", ")),
+          p(strong("No. Telp: "), tps$No_Telp[1]),
+          p(strong("Detail: "), tags$a(href = tps$Gmaps_Link[1], "Lihat detail", target = "_blank")),
+          leafletOutput("tps_map"),
+          p("Silahkan menuju lokasi tersebut yaa!! Thank you 😊🌍", style = "color: #1b5e20; font-weight: bold;")
+        )
+      })
+      output$tps_map <- renderLeaflet({
+        leaflet() %>%
+          addTiles() %>%
+          addMarkers(lat = tps$Latitude[1], lng = tps$Longitude[1], popup = tps$Nama_PSM[1])
+      })
     } else {
       output$tps_result <- renderUI({
         p("Pilih Kabupaten dan Kapanewon terlebih dahulu.", style = "color: #d32f2f;")
@@ -487,7 +590,7 @@ server <- function(input, output, session) {
         tagList(
           h3("Hasil Perhitungan:"),
           p(sprintf("Dari %.2f kg sampah organik, kamu bisa menghasilkan sekitar %.2f kg kompos! 🎉", 
-                    total_waste, compost), style = "color: #2e7d32;"),
+                    total_waste, compost), style = "color: #1b5e20;"),
           plotOutput("compost_plot"),
           h4("Langkah-langkah Mengompos:"),
           tags$ol(
@@ -498,7 +601,7 @@ server <- function(input, output, session) {
             tags$li("Tunggu 1-2 bulan hingga kompos matang.")
           ),
           p("Selamat mengompos sampah kami. Thank you ya udah mau ikut serta menjaga bumi! 🌱😊", 
-            style = "color: #2e7d32; font-weight: bold;")
+            style = "color: #1b5e20; font-weight: bold;")
         )
       })
       output$compost_plot <- renderPlot({
@@ -508,11 +611,13 @@ server <- function(input, output, session) {
         )
         ggplot(data, aes(x = Category, y = Weight, fill = Category)) +
           geom_bar(stat = "identity") +
-          scale_fill_manual(values = c("Sampah Hijau" = "#4caf50", 
+          scale_fill_manual(values = c("Sampah Hijau" = "#81c784", 
                                        "Sampah Cokelat" = "#8d6e63", 
-                                       "Kompos" = "#2e7d32")) +
+                                       "Kompos" = "#388e3c")) +
           labs(title = "Komposisi Sampah dan Hasil Kompos", y = "Berat (kg)", x = "") +
-          theme_minimal()
+          theme_minimal() +
+          theme(text = element_text(family = "Glacial Indifference"),
+                title = element_text(family = "Sunborn"))
       })
     }
   })
