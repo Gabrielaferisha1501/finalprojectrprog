@@ -90,11 +90,14 @@ tps3r_data <- data.frame(
 ui <- fluidPage(
   tags$head(
     tags$style(HTML("
-      @import url('https://fonts.googleapis.com/css2?family=Sunborn:wght@400;700&display=swap');
-      @import url('https://fonts.googleapis.com/css2?family=Glacial+Indifference:wght@400;700&display=swap');
+      @font-face {
+        font-family: 'Milky Juice';
+        src: url('milky_juice.otf') format('opentype');
+      }
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
       
       body { 
-        font-family: 'Glacial Indifference', sans-serif; 
+        font-family: 'Milky Juice', 'Poppins', sans-serif; 
         background: linear-gradient(to bottom, #e8f5e9, #1b5e20), 
                     url('https://www.transparenttextures.com/patterns/leaf.png');
         background-size: cover;
@@ -119,6 +122,12 @@ ui <- fluidPage(
         position: relative;
         z-index: 1;
       }
+      .logo-main {
+        width: 50%;
+        max-width: 300px;
+        opacity: 1;
+        margin-bottom: 20px;
+      }
       .logo-bg {
         position: absolute;
         top: 50%;
@@ -126,27 +135,27 @@ ui <- fluidPage(
         transform: translate(-50%, -50%);
         width: 50%;
         max-width: 300px;
-        opacity: 0.4;
+        opacity: 0.7;
         z-index: -1;
       }
       .title { 
-        font-family: 'Sunborn', sans-serif; 
+        font-family: 'Milky Juice', 'Poppins', sans-serif; 
         color: #1b5e20; 
         font-size: 2.5em; 
         margin: 20px 0 10px; 
       }
       .subtitle { 
-        font-family: 'Glacial Indifference', sans-serif; 
+        font-family: 'Milky Juice', 'Poppins', sans-serif; 
         color: #388e3c; 
         font-size: 1.2em; 
         margin-bottom: 20px; 
       }
       h2, h3, h4 { 
-        font-family: 'Sunborn', sans-serif; 
+        font-family: 'Milky Juice', 'Poppins', sans-serif; 
         color: #1b5e20; 
       }
       p, label, input, select { 
-        font-family: 'Glacial Indifference', sans-serif; 
+        font-family: 'Milky Juice', 'Poppins', sans-serif; 
         color: #1b5e20; 
       }
       .btn-custom { 
@@ -217,6 +226,9 @@ ui <- fluidPage(
       }
       .emoji { 
         font-size: 1.5em; 
+      }
+      .compost-steps, .compost-steps li {
+        color: #000000;
       }
     "))
   ),
@@ -315,6 +327,7 @@ server <- function(input, output, session) {
     
     page_content <- if (rv$page == "main") {
       tagList(
+        img(src = "logo.png", class = "logo-main"),
         h1("Selamat Datang di Aplikasi ComVert", class = "title"),
         p("Comvert Your Waste Into Compost", class = "subtitle"),
         actionButton("start_btn", "Start", class = "btn-custom")
@@ -399,8 +412,14 @@ server <- function(input, output, session) {
       )
     }
     
+    logo_element <- if (rv$page != "main") {
+      img(src = "logo.png", class = "logo-bg")
+    } else {
+      NULL
+    }
+    
     tagList(
-      img(src = "https://www.pngall.com/wp-content/uploads/2016/04/Leaf-PNG-Clipart.png", class = "logo-bg"),
+      logo_element,
       div(class = "container", page_content)
     )
   })
@@ -593,7 +612,7 @@ server <- function(input, output, session) {
                     total_waste, compost), style = "color: #1b5e20;"),
           plotOutput("compost_plot"),
           h4("Langkah-langkah Mengompos:"),
-          tags$ol(
+          tags$ol(class = "compost-steps",
             tags$li("Siapkan wadah kompos atau lubang di tanah."),
             tags$li("Campur sampah hijau dan cokelat dengan rasio seimbang."),
             tags$li("Jaga kelembapan seperti kain basah yang diperas."),
@@ -616,8 +635,7 @@ server <- function(input, output, session) {
                                        "Kompos" = "#388e3c")) +
           labs(title = "Komposisi Sampah dan Hasil Kompos", y = "Berat (kg)", x = "") +
           theme_minimal() +
-          theme(text = element_text(family = "Glacial Indifference"),
-                title = element_text(family = "Sunborn"))
+          theme(text = element_text(family = "Milky Juice"))
       })
     }
   })
