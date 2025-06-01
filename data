@@ -81,3 +81,45 @@ tps3r_data <- data.frame(
   ),
   stringsAsFactors = FALSE
 )
+# Daftar lengkap kecamatan per kabupaten di DIY dengan koordinat rata-rata
+kecamatan_data <- list(
+  "BANTUL" = data.frame(
+    Kapanewon = c("Bambanglipuro", "Banguntapan", "Bantul", "Dlingo", "Imogiri", "Jetis", 
+                  "Kasihan", "Kretek", "Pajangan", "Pandak", "Pleret", "Piyungan", "Pundong", 
+                  "Sanden", "Sedayu", "Sewon", "Srandakan"),
+    Latitude = c(-7.885, -7.825, -7.885, -7.935, -7.945, -7.875, -7.845, -7.925, -7.885, -7.875, -7.860, -7.905, -7.950, -7.965, -7.875, -7.835, -7.950),
+    Longitude = c(110.365, 110.385, 110.335, 110.495, 110.535, 110.370, 110.315, 110.265, 110.307, 110.365, 110.387, 110.348, 110.346, 110.235, 110.305, 110.375, 110.256),
+    stringsAsFactors = FALSE
+  ),
+  "GUNUNGKIDUL" = data.frame(
+    Kapanewon = c("Gedangsari", "Girisubo", "Karangmojo", "Ngawen", "Nglipar", "Paliyan", 
+                  "Panggang", "Patuk", "Playen", "Ponjong", "Purwosari", "Rongkop", "Saptosari", 
+                  "Semanu", "Tanjungsari", "Tepus", "Wonosari", "Semin"),
+    Latitude = c(-7.825, -8.255, -7.965, -7.885, -7.975, -8.135, -8.075, -7.845, -7.940, -7.985, -7.925, -8.205, -8.165, -8.005, -7.895, -8.245, -7.965, -7.885),
+    Longitude = c(110.585, 110.665, 110.605, 110.585, 110.615, 110.545, 110.605, 110.535, 110.550, 110.715, 110.635, 110.675, 110.595, 110.655, 110.605, 110.665, 110.600, 110.585),
+    stringsAsFactors = FALSE
+  ),
+  "KULON PROGO" = data.frame(
+    Kapanewon = c("Galur", "Girimulyo", "Kalibawang", "Kokap", "Lendah", "Nanggulan", 
+                  "Panjatan", "Pengasih", "Samigaluh", "Sentolo", "Temon", "Wates"),
+    Latitude = c(-7.755, -7.765, -7.705, -7.785, -7.765, -7.725, -7.785, -7.858, -7.725, -7.859, -7.815, -7.784),
+    Longitude = c(110.135, 110.165, 110.125, 110.085, 110.185, 110.145, 110.195, 110.146, 110.075, 110.232, 110.105, 110.152),
+    stringsAsFactors = FALSE
+  ),
+  "SLEMAN" = data.frame(
+    Kapanewon = c("Berbah", "Cangkringan", "Depok", "Gamping", "Godean", "Kalasan", "Minggir", 
+                  "Mlati", "Moyudan", "Ngaglik", "Ngemplak", "Pakem", "Prambanan", "Seyegan", 
+                  "Sleman", "Tempel", "Turi"),
+    Latitude = c(-7.665, -7.595, -7.755, -7.725, -7.765, -7.745, -7.715, -7.735, -7.745, -7.718, -7.675, -7.605, -7.745, -7.725, -7.695, -7.645, -7.665),
+    Longitude = c(110.395, 110.435, 110.375, 110.335, 110.305, 110.405, 110.345, 110.365, 110.285, 110.355, 110.405, 110.425, 110.485, 110.315, 110.355, 110.305, 110.455),
+    stringsAsFactors = FALSE
+  ),
+  "KOTA YOGYAKARTA" = data.frame(
+    Kapanewon = c("Danurejan", "Gedongtengen", "Gondokusuman", "Gondomanan", "Jetis", 
+                  "Kotagede", "Kraton", "Mantrijeron", "Mergangsan", "Ngampilan", 
+                  "Pakualaman", "Tegalrejo", "Umbulharjo", "Wirobrajan"),
+    Latitude = c(-7.785, -7.795, -7.780, -7.790, -7.780, -7.805, -7.805, -7.790, -7.785, -7.785, -7.790, -7.785, -7.805, -7.780),
+    Longitude = c(110.375, 110.370, 110.385, 110.370, 110.375, 110.395, 110.365, 110.375, 110.370, 110.365, 110.370, 110.375, 110.405, 110.385),
+    stringsAsFactors = FALSE
+  )
+)
