@@ -2,49 +2,72 @@
 ui <- fluidPage(
   tags$head(
     tags$style(HTML("
-      @import url('https://fonts.googleapis.com/css2?family=Sono:wght@400;700&display=swap');
-      @import url('https://fonts.googleapis.com/css2?family=Glacial+Indifference:wght@400;700&display=swap');
+      @font-face {
+        font-family: 'Milky Juice';
+        src: url('milky_juice.otf') format('opentype');
+      }
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
       
       body { 
-        font-family: 'Glacial Indifference', sans-serif; 
-        background: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), 
+        font-family: 'Milky Juice', 'Poppins', sans-serif; 
+        background: linear-gradient(to bottom, #e8f5e9, #1b5e20), 
                     url('https://www.transparenttextures.com/patterns/leaf.png');
-        background-color: #e8f5e9; 
-        color: #1b5e20; 
+        background-size: cover;
+        background-attachment: fixed;
+        color: #ffffff; 
         margin: 0; 
         padding: 20px; 
         display: flex; 
         justify-content: center; 
         align-items: center; 
         min-height: 100vh; 
+        position: relative;
       }
       .container { 
         max-width: 600px; 
         margin: auto; 
         padding: 20px; 
-        background: #ffffff; 
+        background: rgba(255, 255, 255, 0.9); 
         border-radius: 10px; 
         box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
         text-align: center; 
+        position: relative;
+        z-index: 1;
+      }
+      .logo-main {
+        width: 50%;
+        max-width: 300px;
+        opacity: 1;
+        margin-bottom: 20px;
+      }
+      .logo-bg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50%;
+        max-width: 300px;
+        opacity: 0.7;
+        z-index: -1;
       }
       .title { 
-        font-family: 'Sono', sans-serif; 
+        font-family: 'Milky Juice', 'Poppins', sans-serif; 
         color: #1b5e20; 
         font-size: 2.5em; 
         margin: 20px 0 10px; 
       }
       .subtitle { 
-        font-family: 'Glacial Indifference', sans-serif; 
+        font-family: 'Milky Juice', 'Poppins', sans-serif; 
         color: #388e3c; 
         font-size: 1.2em; 
         margin-bottom: 20px; 
       }
-      h2, h3 { 
-        font-family: 'Sono', sans-serif; 
+      h2, h3, h4 { 
+        font-family: 'Milky Juice', 'Poppins', sans-serif; 
         color: #1b5e20; 
       }
       p, label, input, select { 
-        font-family: 'Glacial Indifference', sans-serif; 
+        font-family: 'Milky Juice', 'Poppins', sans-serif; 
         color: #1b5e20; 
       }
       .btn-custom { 
@@ -116,237 +139,12 @@ ui <- fluidPage(
       .emoji { 
         font-size: 1.5em; 
       }
+      .compost-steps, .compost-steps li {
+        color: #000000;
+      }
     "))
   ),
   
   # Kontrol halaman
   uiOutput("current_page")
 )
-
-# Server
-server <- function(input, output, session) {
-  # File untuk menyimpan data pengguna
-  user_file <- "users.rds"
-  
-  # Inisialisasi data pengguna
-  if (file.exists(user_file)) {
-    users_data <- readRDS(user_file)
-    # Validasi struktur users.rds
-    expected_cols <- c("Name", "Email", "Password", "Sent_Waste", "Processed_Waste")
-    if (all(expected_cols %in% colnames(users_data))) {
-      rv <- reactiveValues(
-        page = "main", 
-        history = c(), 
-        users = users_data,
-        current_user = NULL,
-        show_green_popup = FALSE,
-        show_brown_popup = FALSE
-      )
-    } else {
-      message("Invalid users.rds structure. Initializing new users data frame.")
-      rv <- reactiveValues(
-        page = "main", 
-        history = c(), 
-        users = data.frame(
-          Name = character(), 
-          Email = character(), 
-          Password = character(), 
-          Sent_Waste = numeric(),
-          Processed_Waste = numeric(),
-          stringsAsFactors = FALSE
-        ),
-        current_user = NULL,
-        show_green_popup = FALSE,
-        show_brown_popup = FALSE
-      )
-    }
-  } else {
-    rv <- reactiveValues(
-      page = "main", 
-      history = c(), 
-      users = data.frame(
-        Name = character(), 
-        Email = character(), 
-        Password = character(), 
-        Sent_Waste = numeric(),
-        Processed_Waste = numeric(),
-        stringsAsFactors = FALSE
-      ),
-      current_user = NULL,
-      show_green_popup = FALSE,
-      show_brown_popup = FALSE
-    )
-  }
-  
-  # Fungsi untuk memperbarui riwayat
-  update_history <- function(new_page) {
-    rv$history <- c(rv$history, rv$page)
-    rv$page <- new_page
-  }
-  
-  # Fungsi untuk kembali ke halaman sebelumnya
-  go_back <- function() {
-    if (length(rv$history) > 0) {
-      rv$page <- tail(rv$history, 1)
-      rv$history <- head(rv$history, -1)
-    }
-  }
-  
-  # Simpan data pengguna ke file
-  save_users <- function() {
-    saveRDS(rv$users, user_file)
-  }
-  
-  # Render UI berdasarkan halaman
-  output$current_page <- renderUI({
-    # Tampilkan info pengguna setelah login
-    user_info <- if (!is.null(rv$current_user)) {
-      tagList(
-        div(class = "user-info",
-            p(strong(paste("Hi,", rv$current_user$Name))),
-            p(class = "user-stats", paste("Sampah yang Kamu Olah:", rv$current_user$Processed_Waste, "kg"))
-        )
-      )
-    } else {
-      NULL
-    }
-    
-    page_content <- if (rv$page == "main") {
-      tagList(
-        h1("Selamat Datang di Aplikasi ComVert", class = "title"),
-        p("Comvert Your Waste Into Compost", class = "subtitle"),
-        actionButton("start_btn", "Start", class = "btn-custom")
-      )
-    } else if (rv$page == "login") {
-      tagList(
-        h2("Login", class = "title"),
-        textInput("login_email", "Email", placeholder = "Masukkan email"),
-        passwordInput("login_password", "Password", placeholder = "Masukkan password"),
-        actionButton("login_btn", "Login", class = "btn-custom"),
-        p("Belum punya akun? ", 
-          actionButton("to_signup_btn", "Sign Up", class = "btn-custom")),
-        actionButton("back_btn", "Kembali", class = "btn-back")
-      )
-    } else if (rv$page == "signup") {
-      tagList(
-        h2("Sign Up", class = "title"),
-        textInput("signup_name", "Nama", placeholder = "Masukkan nama"),
-        textInput("signup_email", "Email", placeholder = "Masukkan email"),
-        passwordInput("signup_password", "Password", placeholder = "Masukkan password"),
-        actionButton("signup_btn", "Daftar", class = "btn-custom"),
-        p("Sudah punya akun? ", 
-          actionButton("to_login_btn", "Login", class = "btn-custom")),
-        actionButton("back_btn", "Kembali", class = "btn-back")
-      )
-    } else if (rv$page == "process") {
-      tagList(
-        h2("Pilih Cara Pengolahan Sampahmu ♻️", class = "title"),
-        radioButtons("process_choice", "Apakah kamu ingin mengolah sampah sendiri?",
-                     choices = c("Ya" = "yes", "Tidak" = "no"), inline = TRUE),
-        actionButton("process_submit", "Lanjut", class = "btn-custom"),
-        actionButton("back_btn", "Kembali", class = "btn-back"),
-        user_info
-      )
-    } else if (rv$page == "tps") {
-      tagList(
-        h2("Pengiriman Sampah ke TPS3R 📍", class = "title"),
-        selectInput("kabupaten", "Pilih Kabupaten", 
-                    choices = unique(tps3r_data$Kabupaten)),
-        conditionalPanel(
-          condition = "input.kabupaten != ''",
-          selectInput("kecamatan", "Pilih Kapanewon", choices = NULL)
-        ),
-        numericInput("tps_waste", "Berapa kg sampah yang akan dikirim?", value = 0, min = 0),
-        actionButton("tps_submit", "Cari TPS3R Terdekat", class = "btn-custom"),
-        actionButton("back_btn", "Kembali", class = "btn-back"),
-        uiOutput("tps_result"),
-        user_info
-      )
-    } else if (rv$page == "compost") {
-      tagList(
-        h2("Hitung Kompos dari Sampah Organikmu 🌿", class = "title"),
-        div(class = "info-box",
-            numericInput("green_waste", 
-                         div("Berapa kg sampah hijau yang kamu punya?", 
-                             actionLink("show_green_popup", "Nggak tahu apa itu sampah hijau? Klik ini", 
-                                       class = "info-link")),
-                         value = 0, min = 0),
-            conditionalPanel(
-              condition = "output.show_green_popup",
-              div(class = "popup-box",
-                  p("Sampah hijau merupakan sampah organik yang kaya akan nitrogen. Terdiri dari sisa buah, sayur, kulit telur, dan rumput hijau."),
-                  actionButton("close_green_popup", "Tutup", class = "btn-custom")
-              )
-            ),
-            numericInput("brown_waste", 
-                         div("Berapa kg sampah cokelat yang kamu punya?", 
-                             actionLink("show_brown_popup", "Nggak tahu apa itu sampah cokelat? Klik ini", 
-                                       class = "info-link")),
-                         value = 0, min = 0),
-            conditionalPanel(
-              condition = "output.show_brown_popup",
-              div(class = "popup-box",
-                  p("Sampah cokelat merupakan sampah organik yang kaya akan karbon. Terdiri dari daun kering, ranting kecil, dan bubuk kayu."),
-                  actionButton("close_brown_popup", "Tutup", class = "btn-custom")
-              )
-            )
-        ),
-        actionButton("compost_submit", "Hitung Kompos", class = "btn-custom"),
-        actionButton("back_btn", "Kembali", class = "btn-back"),
-        uiOutput("compost_result"),
-        user_info
-      )
-    }
-    
-    tagList(
-      div(class = "container", page_content)
-    )
-  })
-  
-  # Update pilihan Kapanewon berdasarkan Kabupaten
-  observe({
-    kab <- input$kabupaten
-    if (!is.null(kab) && kab != "") {
-      kec_choices <- unique(tps3r_data$Kapanewon[tps3r_data$Kabupaten == kab])
-      updateSelectInput(session, "kecamatan", choices = kec_choices)
-    }
-  })
-  
-  # Output untuk kontrol pop-up
-  output$show_green_popup <- reactive({
-    rv$show_green_popup
-  })
-  output$show_brown_popup <- reactive({
-    rv$show_brown_popup
-  })
-  outputOptions(output, "show_green_popup", suspendWhenHidden = FALSE)
-  outputOptions(output, "show_brown_popup", suspendWhenHidden = FALSE)
-  
-  # Toggle pop-up
-  observeEvent(input$show_green_popup, {
-    rv$show_green_popup <- TRUE
-  })
-  observeEvent(input$show_brown_popup, {
-    rv$show_brown_popup <- TRUE
-  })
-  observeEvent(input$close_green_popup, {
-    rv$show_green_popup <- FALSE
-  })
-  observeEvent(input$close_brown_popup, {
-    rv$show_brown_popup <- FALSE
-  })
-  
-  # Navigasi ke halaman login
-  observeEvent(input$start_btn, {
-    update_history("login")
-  })
-  
-  # Navigasi ke halaman sign-up dari login
-  observeEvent(input$to_signup_btn, {
-    update_history("signup")
-  })
-  
-  # Navigasi ke halaman login dari sign-up
-  observeEvent(input$to_login_btn, {
-    update_history("login")
-  })
